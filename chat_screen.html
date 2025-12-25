@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 3Bd V2 - شاشة المحادثة</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0c0e10;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .phone-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #0c0e10;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 50px rgba(201, 185, 116, 0.1);
+        }
+        
+        /* Status Bar */
+        .status-bar {
+            background: #292929;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #ffffff;
+            border-bottom: 1px solid #393939;
+        }
+        
+        /* Header */
+        .header {
+            background: #292929;
+            padding: 12px 20px;
+            border-bottom: 1px solid #393939;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .back-btn {
+            background: #393939;
+            border: none;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #c9b974;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: #c9b974;
+            color: #0c0e10;
+        }
+        
+        .chat-info {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .agent-name {
+            color: #c9b974;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .agent-icon {
+            font-size: 20px;
+        }
+        
+        .provider-info {
+            color: #a0a0a0;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        
+        .status-indicator {
+            color: #4ade80;
+            font-size: 10px;
+        }
+        
+        .menu-btn {
+            background: #393939;
+            border: none;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #c9b974;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-btn:hover {
+            background: #c9b974;
+            color: #0c0e10;
+        }
+        
+        /* Chat Messages Area */
+        .chat-area {
+            padding: 16px 20px;
+            min-height: calc(100vh - 200px);
+            background: #0c0e10;
+        }
+        
+        .messages-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 80px;
+        }
+        
+        .message {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message.agent {
+            flex-direction: row;
+        }
+        
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+        }
+        
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #c9b974 0%, #e6d690 100%);
+            color: #0c0e10;
+            border-radius: 18px 18px 4px 18px;
+            margin-right: 8px;
+        }
+        
+        .message.agent .message-bubble {
+            background: #292929;
+            color: #ffffff;
+            border-radius: 18px 18px 18px 4px;
+            margin-left: 8px;
+            border: 1px solid #393939;
+        }
+        
+        .message-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .message-time {
+            font-size: 10px;
+            color: #a0a0a0;
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+        
+        .message.user .message-time {
+            color: #0c0e10;
+        }
+        
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #292929;
+            border-radius: 18px;
+            margin-left: 8px;
+            border: 1px solid #393939;
+            max-width: 100px;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #c9b974;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        .typing-text {
+            color: #a0a0a0;
+            font-size: 12px;
+        }
+        
+        /* Input Area */
+        .input-area {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 400px;
+            background: #292929;
+            border-top: 1px solid #393939;
+            padding: 12px 20px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        .message-input {
+            width: 100%;
+            background: #393939;
+            border: 1px solid #4b5563;
+            border-radius: 20px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 14px;
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .message-input:focus {
+            outline: none;
+            border-color: #c9b974;
+            box-shadow: 0 0 0 3px rgba(201, 185, 116, 0.1);
+        }
+        
+        .message-input::placeholder {
+            color: #a0a0a0;
+        }
+        
+        .input-actions {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: #a0a0a0;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            color: #c9b974;
+            background: rgba(201, 185, 116, 0.1);
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #c9b974 0%, #e6d690 100%);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #0c0e10;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(201, 185, 116, 0.3);
+        }
+        
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(201, 185, 116, 0.4);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Tools Bar */
+        .tools-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 400px;
+            background: #292929;
+            border-top: 1px solid #393939;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tools-container {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .tool-btn {
+            background: none;
+            border: none;
+            color: #a0a0a0;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .tool-btn:hover {
+            color: #c9b974;
+            background: rgba(201, 185, 116, 0.1);
+        }
+        
+        .tool-btn.active {
+            color: #c9b974;
+            background: rgba(201, 185, 116, 0.2);
+        }
+        
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4ade80;
+            font-size: 12px;
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 400px;
+            background: #292929;
+            border-top: 1px solid #393939;
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: 8px;
+            min-width: 60px;
+        }
+        
+        .nav-item:hover {
+            background: rgba(201, 185, 116, 0.1);
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, #c9b974 0%, #e6d690 100%);
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            filter: grayscale(100%);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active .nav-icon {
+            filter: grayscale(0%);
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            color: #a0a0a0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active .nav-label {
+            color: #0c0e10;
+            font-weight: 600;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Content spacing */
+        .content {
+            padding-bottom: 120px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span>محادثة مع مساعد ذكي</span>
+            <span>100% 🔋 | 12:30</span>
+        </div>
+        
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn">←</button>
+            <div class="chat-info">
+                <div class="agent-name">
+                    <span class="agent-icon">🤖</span>
+                    مساعد ذكي
+                </div>
+                <div class="provider-info">
+                    <span class="status-indicator">●</span>
+                    DeepSeek | متصل
+                </div>
+            </div>
+            <button class="menu-btn">⋮</button>
+        </div>
+        
+        <div class="content">
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div class="messages-container">
+                    <!-- User Message -->
+                    <div class="message user">
+                        <div class="message-bubble">
+                            <div class="message-text">مرحباً، أحتاج مساعدة في تحليل البيانات</div>
+                            <div class="message-time">12:25</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Agent Message -->
+                    <div class="message agent">
+                        <div class="message-bubble">
+                            <div class="message-text">أهلاً بك! سأساعدك في تحليل البيانات. ما نوع البيانات التي تريد تحليلها؟</div>
+                            <div class="message-time">12:25</div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Message -->
+                    <div class="message user">
+                        <div class="message-bubble">
+                            <div class="message-text">لدي ملف Excel يحتوي على مبيعات الشهر الماضي</div>
+                            <div class="message-time">12:26</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Agent Message -->
+                    <div class="message agent">
+                        <div class="message-bubble">
+                            <div class="message-text">ممتاز! يمكنني مساعدتك في تحليل بيانات المبيعات. هل يمكنك رفع الملف؟</div>
+                            <div class="message-time">12:26</div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Message -->
+                    <div class="message user">
+                        <div class="message-bubble">
+                            <div class="message-text">حسناً، سأقوم برفعه الآن</div>
+                            <div class="message-time">12:27</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Typing Indicator -->
+                    <div class="message agent">
+                        <div class="typing-indicator">
+                            <div class="typing-dots">
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                            </div>
+                            <span class="typing-text">يكتب...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Input Area -->
+        <div class="input-area">
+            <div class="input-container">
+                <textarea class="message-input" placeholder="اكتب رسالتك هنا..." rows="1"></textarea>
+                <div class="input-actions">
+                    <button class="action-btn">📎</button>
+                    <button class="action-btn">🎤</button>
+                </div>
+            </div>
+            <button class="send-btn">➤</button>
+        </div>
+        
+        <!-- Tools Bar -->
+        <div class="tools-bar">
+            <div class="tools-container">
+                <button class="tool-btn active">🤖 Agent</button>
+                <button class="tool-btn">✏️ Edit</button>
+                <button class="tool-btn">🧠 Memory</button>
+                <button class="tool-btn">⚡ Batch</button>
+            </div>
+            <div class="agent-status">
+                <div class="status-dot"></div>
+                <span>جاهز</span>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">الرئيسية</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">محادثة</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🛠️</div>
+                <div class="nav-label">أدوات</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-label">إعدادات</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-resize textarea
+        const messageInput = document.querySelector('.message-input');
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+        
+        // Send message functionality
+        const sendBtn = document.querySelector('.send-btn');
+        sendBtn.addEventListener('click', function() {
+            const message = messageInput.value.trim();
+            if (message) {
+                console.log('Sending message:', message);
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+            }
+        });
+        
+        // Enter key to send
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>

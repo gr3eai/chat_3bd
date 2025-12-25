@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 3Bd V2 - الإعدادات</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0c0e10;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .phone-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #0c0e10;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 50px rgba(201, 185, 116, 0.1);
+        }
+        
+        /* Status Bar */
+        .status-bar {
+            background: #292929;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #ffffff;
+            border-bottom: 1px solid #393939;
+        }
+        
+        /* Header */
+        .header {
+            background: #292929;
+            padding: 12px 20px;
+            border-bottom: 1px solid #393939;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .back-btn {
+            background: #393939;
+            border: none;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #c9b974;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: #c9b974;
+            color: #0c0e10;
+        }
+        
+        .header-title {
+            color: #c9b974;
+            font-size: 20px;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(201, 185, 116, 0.3);
+        }
+        
+        .save-btn {
+            background: linear-gradient(135deg, #c9b974 0%, #e6d690 100%);
+            color: #0c0e10;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .save-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(201, 185, 116, 0.3);
+        }
+        
+        /* Settings Content */
+        .settings-content {
+            padding: 16px 20px;
+            padding-bottom: 100px;
+        }
+        
+        /* Section Titles */
+        .section-title {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #c9b974 0%, #e6d690 100%);
+            border-radius: 2px;
+        }
+        
+        .section-title:first-child {
+            margin-top: 0;
+        }
+        
+        /* Settings Sections */
+        .settings-section {
+            background: linear-gradient(135deg, #292929 0%, #343434 100%);
+            border: 1px solid #393939;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .setting-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #393939;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-item:hover {
+            background: rgba(201, 185, 116, 0.05);
+        }
+        
+        .setting-info {
+            flex: 1;
+        }
+        
+        .setting-label {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .setting-description {
+            color: #a0a0a0;
+            font-size: 12px;
+        }
+        
+        .setting-action {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* API Key Inputs */
+        .api-input-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .api-input {
+            flex: 1;
+            background: #393939;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .api-input:focus {
+            outline: none;
+            border-color: #c9b974;
+            box-shadow: 0 0 0 3px rgba(201, 185, 116, 0.1);
+        }
+        
+        .test-btn {
+            background: #4ade80;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .test-btn:hover {
+            background: #22c55e;
+        }
+        
+        .test-btn.failed {
+            background: #e76a5e;
+        }
+        
+        .test-btn.failed:hover {
+            background: #dc2626;
+        }
+        
+        .test-btn.pending {
+            background: #6b7280;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #393939;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #c9b974 0%, #e6d690 100%);
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(-20px);
+        }
+        
+        /* Select Dropdown */
+        .select-input {
+            background: #393939;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-size: 12px;
+            cursor: pointer;
+            min-width: 120px;
+        }
+        
+        .select-input:focus {
+            outline: none;
+            border-color: #c9b974;
+            box-shadow: 0 0 0 3px rgba(201, 185, 116, 0.1);
+        }
+        
+        /* Range Slider */
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .range-slider {
+            width: 100px;
+            height: 4px;
+            background: #393939;
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .range-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #c9b974 0%, #e6d690 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .range-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #c9b974 0%, #e6d690 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .range-value {
+            color: #c9b974;
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 30px;
+        }
+        
+        /* Status Indicators */
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+        
+        .status-online {
+            background: #4ade80;
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+        }
+        
+        .status-offline {
+            background: #6b7280;
+        }
+        
+        .status-error {
+            background: #e76a5e;
+            box-shadow: 0 0 8px rgba(231, 106, 94, 0.4);
+        }
+        
+        /* Permission Items */
+        .permission-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-bottom: 1px solid #393939;
+        }
+        
+        .permission-item:last-child {
+            border-bottom: none;
+        }
+        
+        .permission-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .permission-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(201, 185, 116, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .permission-details {
+            flex: 1;
+        }
+        
+        .permission-name {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .permission-status {
+            color: #a0a0a0;
+            font-size: 12px;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 400px;
+            background: #292929;
+            border-top: 1px solid #393939;
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: 8px;
+            min-width: 60px;
+        }
+        
+        .nav-item:hover {
+            background: rgba(201, 185, 116, 0.1);
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, #c9b974 0%, #e6d690 100%);
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            filter: grayscale(100%);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active .nav-icon {
+            filter: grayscale(0%);
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            color: #a0a0a0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active .nav-label {
+            color: #0c0e10;
+            font-weight: 600;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .settings-section {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .settings-section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+        
+        .settings-section:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+        
+        .settings-section:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span>الإعدادات</span>
+            <span>100% 🔋 | 12:30</span>
+        </div>
+        
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn">←</button>
+            <div class="header-title">الإعدادات</div>
+            <button class="save-btn">حفظ</button>
+        </div>
+        
+        <div class="settings-content">
+            <!-- API Keys Section -->
+            <div class="section-title">مفاتيح API</div>
+            <div class="settings-section">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">DeepSeek</div>
+                        <div class="setting-description">مفتاح API للوصول إلى نماذج DeepSeek</div>
+                    </div>
+                    <div class="setting-action">
+                        <div class="api-input-container">
+                            <input type="password" class="api-input" placeholder="أدخل مفتاح API" value="sk-2853a7d7aca74ccca6626c5c2130f9dd">
+                            <button class="test-btn">اختبار</button>
+                        </div>
+                        <div class="status-indicator status-online"></div>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Groq</div>
+                        <div class="setting-description">مفتاح API للوصول إلى نماذج Groq</div>
+                    </div>
+                    <div class="setting-action">
+                        <div class="api-input-container">
+                            <input type="password" class="api-input" placeholder="أدخل مفتاح API" value="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">
+                            <button class="test-btn">اختبار</button>
+                        </div>
+                        <div class="status-indicator status-online"></div>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">OpenAI</div>
+                        <div class="setting-description">مفتاح API للوصول إلى نماذج OpenAI</div>
+                    </div>
+                    <div class="setting-action">
+                        <div class="api-input-container">
+                            <input type="password" class="api-input" placeholder="أدخل مفتاح API">
+                            <button class="test-btn failed">اختبار</button>
+                        </div>
+                        <div class="status-indicator status-error"></div>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Together</div>
+                        <div class="setting-description">مفتاح API للوصول إلى نماذج Together</div>
+                    </div>
+                    <div class="setting-action">
+                        <div class="api-input-container">
+                            <input type="password" class="api-input" placeholder="أدخل مفتاح API">
+                            <button class="test-btn pending">اختبار</button>
+                        </div>
+                        <div class="status-indicator status-offline"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Models Section -->
+            <div class="section-title">النماذج</div>
+            <div class="settings-section">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">النموذج الافتراضي</div>
+                        <div class="setting-description">اختر النموذج الافتراضي للمحادثات</div>
+                    </div>
+                    <div class="setting-action">
+                        <select class="select-input">
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            <option value="gpt-4">GPT-4</option>
+                            <option value="deepseek-chat">DeepSeek Chat</option>
+                            <option value="llama-3.1-8b">Llama 3.1 8B</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">درجة الحرارة (Temperature)</div>
+                        <div class="setting-description">تحكم في درجة الإبداع في الردود</div>
+                    </div>
+                    <div class="setting-action">
+                        <div class="range-container">
+                            <input type="range" class="range-slider" min="0" max="2" step="0.1" value="0.7">
+                            <span class="range-value">0.7</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">الرموز القصوى (Max Tokens)</div>
+                        <div class="setting-description">الحد الأقصى لطول الرد</div>
+                    </div>
+                    <div class="setting-action">
+                        <div class="range-container">
+                            <input type="range" class="range-slider" min="100" max="4000" step="100" value="2000">
+                            <span class="range-value">2000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Permissions Section -->
+            <div class="section-title">الأذونات</div>
+            <div class="settings-section">
+                <div class="permission-item">
+                    <div class="permission-info">
+                        <div class="permission-icon">📷</div>
+                        <div class="permission-details">
+                            <div class="permission-name">الكاميرا</div>
+                            <div class="permission-status">لالتقاط الصور والفيديو</div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch active">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="permission-item">
+                    <div class="permission-info">
+                        <div class="permission-icon">🎤</div>
+                        <div class="permission-details">
+                            <div class="permission-name">الميكروفون</div>
+                            <div class="permission-status">تسجيل الصوت والمحادثات</div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch active">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="permission-item">
+                    <div class="permission-info">
+                        <div class="permission-icon">📍</div>
+                        <div class="permission-details">
+                            <div class="permission-name">الموقع الجغرافي</div>
+                            <div class="permission-status">تحديد الموقع الجغرافي</div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="permission-item">
+                    <div class="permission-info">
+                        <div class="permission-icon">🖼️</div>
+                        <div class="permission-details">
+                            <div class="permission-name">الملفات والصور</div>
+                            <div class="permission-status">الوصول للملفات والصور</div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch active">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Appearance Section -->
+            <div class="section-title">المظهر</div>
+            <div class="settings-section">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">الوضع</div>
+                        <div class="setting-description">اختر بين الوضع الفاتح أو الداكن</div>
+                    </div>
+                    <div class="setting-action">
+                        <select class="select-input">
+                            <option value="dark">داكن</option>
+                            <option value="light">فاتح</option>
+                            <option value="auto">تلقائي</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">حجم الخط</div>
+                        <div class="setting-description">حجم النص في التطبيق</div>
+                    </div>
+                    <div class="setting-action">
+                        <select class="select-input">
+                            <option value="small">صغير</option>
+                            <option value="normal" selected>عادي</option>
+                            <option value="large">كبير</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">اللغة</div>
+                        <div class="setting-description">لغة واجهة المستخدم</div>
+                    </div>
+                    <div class="setting-action">
+                        <select class="select-input">
+                            <option value="ar" selected>العربية</option>
+                            <option value="en">English</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">الرئيسية</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">محادثة</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🛠️</div>
+                <div class="nav-label">أدوات</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-label">إعدادات</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Toggle switches
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+        
+        // Range sliders
+        document.querySelectorAll('.range-slider').forEach(slider => {
+            slider.addEventListener('input', function() {
+                const value = this.value;
+                const valueDisplay = this.parentElement.querySelector('.range-value');
+                valueDisplay.textContent = value;
+            });
+        });
+        
+        // Test buttons
+        document.querySelectorAll('.test-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const originalText = this.textContent;
+                this.textContent = 'جاري...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.disabled = false;
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
